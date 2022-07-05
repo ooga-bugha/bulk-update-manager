@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MY APP</title>
+</head>
+<body>
+  <h1> May Node and Express be with you. </h1>
+  <input type="text" id="name" placeholder="name" name="name">
+  <input type="text" id="email" placeholder="enter email address" name="email">
+  <input type="text" id="fd_url" placeholder="format in company.freshdesk.com" name="Freshdesk_URL" >
+  <input type="text" id="api_key" placeholder="enter API key" name="API_Key" >
+  <input type="file" id="csv" name="ticketsCSV">
+  <input type="hidden" id="tickets" name="ticketsCSV" value="">
+  <script>
+	function send () {
+	  var body = {
+		name: document.getElementById('name').value,
+		email: document.getElementById('email').value,
+		fd_url: document.getElementById('fd_url').value,
+		api_key: document.getElementById('api_key').value,
+		tickets: (document.getElementById('tickets').value).split(",")
+	  }
+	  var check = JSON.stringify(body);
+	  var xhr = new window.XMLHttpRequest();
+	  xhr.open('POST','csv');
+	  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+	  xhr.send(check);
+	  console.log(check);
+	}
+  </script>
+  <button type="submit" onclick="send()">Submit</button>
+<script type="text/javascript">
+	var csvArray = [];
+	var i = 0;
+	var element = "";
+    var hiddenArray = document.getElementById("array");
+	var fileInput = document.getElementById("csv");
+	readFile = function () {
+		var reader = new FileReader();
+		reader.onload = function () {
+			var final = reader.result;
+			while(i<final.length){
+				if(final[i]=="\n"){
+					csvArray.push(element.split(","));
+					element = "";
+				}
+				else{
+					element = element + final[i];
+				}
+				i++;
+			}
+            document.getElementById("tickets").value = String(csvArray);
+			console.log(document.getElementById("tickets").value);
+		};
+		// start reading the file. When it is done, calls the onload event defined above.
+		reader.readAsBinaryString(fileInput.files[0]);
+	};
+	fileInput.addEventListener('change', readFile);
+</script>
+</body>
+</html>
